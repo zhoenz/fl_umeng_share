@@ -1,0 +1,44 @@
+group 'com.wxhg.fl_umeng_share'
+version '1.0'
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+        maven { url 'https://dl.bintray.com/umsdk/release' }
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.1.0'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url 'https://dl.bintray.com/umsdk/release' }
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 16
+        multiDexEnabled true
+    }
+//    lintOptions {
+//        disable 'InvalidPackage'
+//    }
+}
+
+dependencies{
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'com.umeng.umsdk:common:9.3.3'
+    implementation 'com.umeng.umsdk:asms:1.1.4'
+}
+

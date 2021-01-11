@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="Gradle: com.umeng.umsdk:share-qq:7.1.3@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/222843bc38862273a5fd65049fa03e40/jetified-share-qq-7.1.3/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/222843bc38862273a5fd65049fa03e40/jetified-share-qq-7.1.3/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/222843bc38862273a5fd65049fa03e40/jetified-share-qq-7.1.3/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/222843bc38862273a5fd65049fa03e40/jetified-share-qq-7.1.3/jars/libs/open_sdk_r8353806_lite.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.umeng.umsdk/share-qq/7.1.3/6fe671f507bc752e0f07366f78b2ac265f1c7b38/share-qq-7.1.3-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.umeng.umsdk/share-qq/7.1.3/6fe671f507bc752e0f07366f78b2ac265f1c7b38/share-qq-7.1.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
