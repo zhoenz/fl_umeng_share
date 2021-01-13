@@ -38,27 +38,30 @@ class FlutterUmengPlugin {
     return result;
   }
 
-  static Future<String> shareText({String shareString}) async {
+  static Future<String> shareText({String shareString, String platform}) async {
     Map<String, dynamic> shareMap = {
       "shareString": shareString,
+      "platform": platform ?? ""
     };
     final String result = await _channel.invokeMethod('shareText', shareMap);
     return result;
   }
 
-  static Future<String> shareImage({String shareImage}) async {
+  static Future<String> shareImage({String shareImage, String platform}) async {
     Map<String, dynamic> shareMap = {
       "shareImage": shareImage,
+      "platform": platform ?? "",
     };
     final String result = await _channel.invokeMethod('shareImage', shareMap);
     return result;
   }
 
   static Future<String> shareImageText(
-      {String shareText, String shareImage}) async {
+      {String shareText, String shareImage, String platform}) async {
     Map<String, dynamic> shareMap = {
       "shareText": shareText,
       "shareImage": shareImage,
+      "platform": platform ?? "",
     };
     final String result =
         await _channel.invokeMethod('shareImageText', shareMap);
@@ -66,12 +69,17 @@ class FlutterUmengPlugin {
   }
 
   static Future<String> shareWeb(
-      {String shareTitle, String descr, String icon, String webUrl}) async {
+      {String shareTitle,
+      String descr,
+      String icon,
+      String webUrl,
+      String platform}) async {
     Map<String, dynamic> shareMap = {
       "shareTitle": shareTitle,
       "descr": descr,
       "icon": icon,
       "webUrl": webUrl,
+      "platform": platform ?? "",
     };
     final String result = await _channel.invokeMethod('shareWebView', shareMap);
     return result;

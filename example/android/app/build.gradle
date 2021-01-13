@@ -54,19 +54,23 @@ android {
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        signingConfig signingConfigs.debug
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            signingConfig signingConfigs.wxhg1
+            signingConfig signingConfigs.debug
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
         debug{
             minifyEnabled false
-            signingConfig signingConfigs.wxhg1
+            signingConfig signingConfigs.debug
 //            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        profile {
+            signingConfig signingConfigs.debug
         }
     }
 }

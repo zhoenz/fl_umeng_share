@@ -1,12 +1,11 @@
 import 'dart:io';
 
+import 'package:fl_umeng_share/flutter_umeng_plugin.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:fl_umeng_share/fl_umeng_share.dart';
-
-import 'flutter_umeng_plugin.dart';
 
 void main() {
   runApp(MyApp());
@@ -103,7 +102,6 @@ class _MyAppState extends State<MyApp> {
         wbAppSecret: "",
         wbRedirectURL: "", //微博中设置
       );
-      await shareText();
     } on PlatformException {
       umSocialSDKVersion = 'fail';
     }
@@ -116,7 +114,8 @@ class _MyAppState extends State<MyApp> {
   Future<void> shareText() async {
     String result;
     try {
-      result = await FlutterUmengPlugin.shareText(shareString: "分享测试数据");
+      result = await FlutterUmengPlugin.shareText(
+          shareString: "分享测试数据", platform: "");
     } on PlatformException {
       result = 'fail';
     }
@@ -131,6 +130,7 @@ class _MyAppState extends State<MyApp> {
     String result;
     try {
       result = await FlutterUmengPlugin.shareImage(
+          platform: "QQ",
           shareImage:
               "https://img.alicdn.com/tfs/TB1tmkCctTfau8jSZFwXXX1mVXa-1280-1280.png");
     } on PlatformException {
