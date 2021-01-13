@@ -115,7 +115,7 @@ class _MyAppState extends State<MyApp> {
     String result;
     try {
       result = await FlutterUmengPlugin.shareText(
-          shareString: "分享测试数据", platform: "");
+          shareString: "分享测试数据", platform: "WEIXIN");
     } on PlatformException {
       result = 'fail';
     }
@@ -130,7 +130,7 @@ class _MyAppState extends State<MyApp> {
     String result;
     try {
       result = await FlutterUmengPlugin.shareImage(
-          platform: "QQ",
+          platform: "WEIXIN",
           shareImage:
               "https://img.alicdn.com/tfs/TB1tmkCctTfau8jSZFwXXX1mVXa-1280-1280.png");
     } on PlatformException {
@@ -146,9 +146,7 @@ class _MyAppState extends State<MyApp> {
     String result;
     try {
       result = await FlutterUmengPlugin.shareImageText(
-          shareText: "分享文字",
-          shareImage:
-              "https://mobile.umeng.com/images/pic/home/social/img-1.png");
+          shareText: "分享文字", platform: "WEIXIN");
     } on PlatformException {
       result = 'fail';
     }

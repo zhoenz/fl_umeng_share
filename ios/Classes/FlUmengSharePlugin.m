@@ -11,40 +11,55 @@
 
 @implementation FlUmengSharePlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-  FlutterMethodChannel* channel = [FlutterMethodChannel
-      methodChannelWithName:@"fl_umeng_share"
-            binaryMessenger:[registrar messenger]];
-  FlUmengSharePlugin* instance = [[FlUmengSharePlugin alloc] init];
-  [registrar addMethodCallDelegate:instance channel:channel];
+    FlutterMethodChannel* channel = [FlutterMethodChannel
+                                     methodChannelWithName:@"fl_umeng_share"
+                                     binaryMessenger:[registrar messenger]];
+    FlUmengSharePlugin* instance = [[FlUmengSharePlugin alloc] init];
+    [registrar addMethodCallDelegate:instance channel:channel];
+}
+
++ (UMSocialPlatformType)getTypeByStr:(NSString*) platformStr{
+    if([@"WEIXIN" isEqualToString: platformStr]){
+        return UMSocialPlatformType_WechatSession;
+    }else if([@"WEIXIN_CIRCLE" isEqualToString:platformStr]){
+        return UMSocialPlatformType_WechatTimeLine;
+    }else if([@"QQ" isEqualToString:platformStr]){
+        return UMSocialPlatformType_QQ;
+    }else if([@"QZONE" isEqualToString: platformStr]){
+        return UMSocialPlatformType_Qzone;
+    }else{
+        return UMSocialPlatformType_UnKnown;
+        
+    }
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     SWITCH(call.method){
         CASE (@"shareInit") {
             // U-Share 平台设置
-             NSString *umengAppkey = call.arguments[@"umengAppkey"];
-             NSString *channel = call.arguments[@"channel"];
-             NSString *wxAppKey = call.arguments[@"wxAppKey"];
-             NSString *wxAppSecret = call.arguments[@"wxAppSecret"];
-             NSString *wxRedirectURL = call.arguments[@"wxRedirectURL"];
-             NSString *wbAppKey = call.arguments[@"wbAppKey"];
-             NSString *wbAppSecret = call.arguments[@"wbAppSecret"];
-             NSString *qqAppKey = call.arguments[@"qqAppKey"];
-             NSString *qqAppSecret = call.arguments[@"qqAppSecret"];
-             NSString *wbRedirectURL = call.arguments[@"wbRedirectURL"];
-             //设置友盟appkey
-             [UMConfigure initWithAppkey:umengAppkey channel:channel];
-             //打开调试日志
-             [[UMSocialManager defaultManager] openLog:false];
-             //设置微信的appKey和appSecret
-             [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_WechatSession appKey:wxAppKey appSecret:wxAppSecret redirectURL:wxRedirectURL];
-             //QQ端统一和网页端使用相同的APPKEY
-             [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_QQ appKey:qqAppKey/*设置QQ平台的appID*/  appSecret:qqAppSecret redirectURL:@"http://mobile.umeng.com/social"];
-             /* 设置新浪的appKey和appSecret */
+            NSString *umengAppkey = call.arguments[@"umengAppkey"];
+            NSString *channel = call.arguments[@"channel"];
+            NSString *wxAppKey = call.arguments[@"wxAppKey"];
+            NSString *wxAppSecret = call.arguments[@"wxAppSecret"];
+            NSString *wxRedirectURL = call.arguments[@"wxRedirectURL"];
+            NSString *wbAppKey = call.arguments[@"wbAppKey"];
+            NSString *wbAppSecret = call.arguments[@"wbAppSecret"];
+            NSString *qqAppKey = call.arguments[@"qqAppKey"];
+            NSString *qqAppSecret = call.arguments[@"qqAppSecret"];
+            NSString *wbRedirectURL = call.arguments[@"wbRedirectURL"];
+            //设置友盟appkey
+            [UMConfigure initWithAppkey:umengAppkey channel:channel];
+            //打开调试日志
+            [[UMSocialManager defaultManager] openLog:false];
+            //设置微信的appKey和appSecret
+            [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_WechatSession appKey:wxAppKey appSecret:wxAppSecret redirectURL:wxRedirectURL];
+            //QQ端统一和网页端使用相同的APPKEY
+            [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_QQ appKey:qqAppKey/*设置QQ平台的appID*/  appSecret:qqAppSecret redirectURL:@"http://mobile.umeng.com/social"];
+            /* 设置新浪的appKey和appSecret */
             //  [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_Sina appKey:wbAppKey  appSecret:wbAppSecret redirectURL:wbRedirectURL];
-             // 获取友盟social版本号
+            // 获取友盟social版本号
             result([UMSocialGlobal umSocialSDKVersion]);
-//            [[UIApplication sharedApplication] registerForRemoteNotifications];
+            //            [[UIApplication sharedApplication] registerForRemoteNotifications];
             
             
             FlutterViewController* flutterViewController = [FlutterViewController new];
@@ -54,74 +69,133 @@
             [eventChannel setStreamHandler:self];
             
             break;
-        }   
+        }
         CASE (@"shareText") {
-             //配置需要的分享的三方应用 单独写出去 会出现第一次没有平台的问题
-            [UMSocialUIManager setPreDefinePlatforms:@[@(UMSocialPlatformType_WechatSession),@(UMSocialPlatformType_WechatTimeLine),@(UMSocialPlatformType_QQ),@(UMSocialPlatformType_Qzone)]];
-              //显示分享面板
-              [UMSocialUIManager showShareMenuViewInWindowWithPlatformSelectionBlock:^(UMSocialPlatformType platformType, NSDictionary *userInfo) {
-                  //创建分享消息对象
-                  UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
-                  //设置文本
-                  messageObject.text = call.arguments[@"shareString"];
-                  //调用分享接口
-                  [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:nil completion:^(id data, NSError *error) {
-                      if (error) {
-                          //有回调 此为分享失败 统一为fail
-                          result(@"fail");
-                      }else{
-                          //有回调 但是否是真分享不能判断 三方平台d没有返回信息 统一为success
-                          result(@"success");
-                      }
-                  }];
-              }];
+            UMSocialPlatformType platformType = [FlUmengSharePlugin getTypeByStr:call.arguments[@"platform"]];
+            if(platformType!=-2){
+                
+                //创建分享消息对象
+                UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
+                //设置文本
+                messageObject.text = call.arguments[@"shareString"];
+                //调用分享接口
+                [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:nil completion:^(id data, NSError *error) {
+                    if (error) {
+                        //有回调 此为分享失败 统一为fail
+                        result(@"fail");
+                    }else{
+                        //有回调 但是否是真分享不能判断 三方平台d没有返回信息 统一为success
+                        result(@"success");
+                    }
+                }];
+            }else{
+                //配置需要的分享的三方应用 单独写出去 会出现第一次没有平台的问题
+                [UMSocialUIManager setPreDefinePlatforms:@[@(UMSocialPlatformType_WechatSession),@(UMSocialPlatformType_WechatTimeLine),@(UMSocialPlatformType_QQ),@(UMSocialPlatformType_Qzone)]];
+                //显示分享面板
+                [UMSocialUIManager showShareMenuViewInWindowWithPlatformSelectionBlock:^(UMSocialPlatformType platformType, NSDictionary *userInfo) {
+                    //创建分享消息对象
+                    UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
+                    //设置文本
+                    messageObject.text = call.arguments[@"shareString"];
+                    //调用分享接口
+                    [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:nil completion:^(id data, NSError *error) {
+                        if (error) {
+                            //有回调 此为分享失败 统一为fail
+                            result(@"fail");
+                        }else{
+                            //有回调 但是否是真分享不能判断 三方平台d没有返回信息 统一为success
+                            result(@"success");
+                        }
+                    }];
+                }];
+            }
             break;
         }   //分享文本
         CASE (@"shareImage") {
-            [UMSocialUIManager setPreDefinePlatforms:@[@(UMSocialPlatformType_WechatSession),@(UMSocialPlatformType_WechatTimeLine),@(UMSocialPlatformType_QQ),@(UMSocialPlatformType_Qzone)]];
-                  //显示分享面板
-                  [UMSocialUIManager showShareMenuViewInWindowWithPlatformSelectionBlock:^(UMSocialPlatformType platformType, NSDictionary *userInfo) {
-                      //创建分享消息对象
-                      UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
-                      //创建图片内容对象
-                      UMShareImageObject *shareObject = [[UMShareImageObject alloc] init];
-                      //如果有缩略图，则设置缩略图
-            //          shareObject.thumbImage = [UIImage imageNamed:@"icon"];
-                      [shareObject setShareImage:call.arguments[@"shareImage"]];
-                      //分享消息对象设置分享内容对象
-                      messageObject.shareObject = shareObject;
-                     //调用分享接口
-                      [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:nil completion:^(id data, NSError *error) {
-                          if (error) {
-                              result(@"fail");
-                          }else{
-                              result(@"success");
-                          }
-                      }];
-                  }];
+            UMSocialPlatformType platformType = [FlUmengSharePlugin getTypeByStr:call.arguments[@"platform"]];
+            if(platformType!=-2){
+                //创建分享消息对象
+                UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
+                //创建图片内容对象
+                UMShareImageObject *shareObject = [[UMShareImageObject alloc] init];
+                //如果有缩略图，则设置缩略图
+                //          shareObject.thumbImage = [UIImage imageNamed:@"icon"];
+                [shareObject setShareImage:call.arguments[@"shareImage"]];
+                //分享消息对象设置分享内容对象
+                messageObject.shareObject = shareObject;
+                //调用分享接口
+                [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:nil completion:^(id data, NSError *error) {
+                    if (error) {
+                        result(@"fail");
+                    }else{
+                        result(@"success");
+                    }
+                }];
+            }else{
+                [UMSocialUIManager setPreDefinePlatforms:@[@(UMSocialPlatformType_WechatSession),@(UMSocialPlatformType_WechatTimeLine),@(UMSocialPlatformType_QQ),@(UMSocialPlatformType_Qzone)]];
+                //显示分享面板
+                [UMSocialUIManager showShareMenuViewInWindowWithPlatformSelectionBlock:^(UMSocialPlatformType platformType, NSDictionary *userInfo) {
+                    //创建分享消息对象
+                    UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
+                    //创建图片内容对象
+                    UMShareImageObject *shareObject = [[UMShareImageObject alloc] init];
+                    //如果有缩略图，则设置缩略图
+                    //          shareObject.thumbImage = [UIImage imageNamed:@"icon"];
+                    [shareObject setShareImage:call.arguments[@"shareImage"]];
+                    //分享消息对象设置分享内容对象
+                    messageObject.shareObject = shareObject;
+                    //调用分享接口
+                    [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:nil completion:^(id data, NSError *error) {
+                        if (error) {
+                            result(@"fail");
+                        }else{
+                            result(@"success");
+                        }
+                    }];
+                }];
+            }
             break;
-        }  
+        }
         CASE(@"shareWebView"){
-            [UMSocialUIManager setPreDefinePlatforms:@[@(UMSocialPlatformType_WechatSession),@(UMSocialPlatformType_WechatTimeLine),@(UMSocialPlatformType_QQ),@(UMSocialPlatformType_Qzone)]];
-            //显示分享面板
-            [UMSocialUIManager showShareMenuViewInWindowWithPlatformSelectionBlock:^(UMSocialPlatformType platformType, NSDictionary *userInfo) {
-                  //创建分享消息对象
-                     UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
-                     //创建网页内容对象
-                     UMShareWebpageObject *shareObject = [UMShareWebpageObject shareObjectWithTitle:call.arguments[@"shareTitle"] descr:call.arguments[@"descr"] thumImage:[UIImage imageNamed:call.arguments[@"icon"]]];
-                     //设置网页地址
-                     shareObject.webpageUrl =call.arguments[@"webUrl"];
-                     //分享消息对象设置分享内容对象
-                     messageObject.shareObject = shareObject;
-                     //调用分享接口
-                     [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:nil completion:^(id data, NSError *error) {
-                         if (error) {
-                             result(@"fail");
-                         }else{
-                             result(@"success");
-                         }
-                     }];
-            }];
+            UMSocialPlatformType platformType = [FlUmengSharePlugin getTypeByStr:call.arguments[@"platform"]];
+            if(platformType!=-2){
+                //创建分享消息对象
+                UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
+                //创建网页内容对象
+                UMShareWebpageObject *shareObject = [UMShareWebpageObject shareObjectWithTitle:call.arguments[@"shareTitle"] descr:call.arguments[@"descr"] thumImage:[UIImage imageNamed:call.arguments[@"icon"]]];
+                //设置网页地址
+                shareObject.webpageUrl =call.arguments[@"webUrl"];
+                //分享消息对象设置分享内容对象
+                messageObject.shareObject = shareObject;
+                //调用分享接口
+                [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:nil completion:^(id data, NSError *error) {
+                    if (error) {
+                        result(@"fail");
+                    }else{
+                        result(@"success");
+                    }
+                }];}else{
+                    [UMSocialUIManager setPreDefinePlatforms:@[@(UMSocialPlatformType_WechatSession),@(UMSocialPlatformType_WechatTimeLine),@(UMSocialPlatformType_QQ),@(UMSocialPlatformType_Qzone)]];
+                    //显示分享面板
+                    [UMSocialUIManager showShareMenuViewInWindowWithPlatformSelectionBlock:^(UMSocialPlatformType platformType, NSDictionary *userInfo) {
+                        //创建分享消息对象
+                        UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
+                        //创建网页内容对象
+                        UMShareWebpageObject *shareObject = [UMShareWebpageObject shareObjectWithTitle:call.arguments[@"shareTitle"] descr:call.arguments[@"descr"] thumImage:[UIImage imageNamed:call.arguments[@"icon"]]];
+                        //设置网页地址
+                        shareObject.webpageUrl =call.arguments[@"webUrl"];
+                        //分享消息对象设置分享内容对象
+                        messageObject.shareObject = shareObject;
+                        //调用分享接口
+                        [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:nil completion:^(id data, NSError *error) {
+                            if (error) {
+                                result(@"fail");
+                            }else{
+                                result(@"success");
+                            }
+                        }];
+                    }];
+                }
             break;
         }  //分享网页
     }
