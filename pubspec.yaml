@@ -2,7 +2,7 @@ name: fl_umeng_share
 description: A new flutter plugin project.
 version: 0.0.1
 author:
-homepage:
+homepage: https://github.com/zhoenz/fl_umeng_share
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
