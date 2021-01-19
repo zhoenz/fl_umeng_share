@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.wxhg.fl_umeng_share">
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -11,7 +12,7 @@
         <!--明确引用org.apache.http.legacy库，避免QQ官方open sdk在Android 9上报错 -->
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
         <activity
-            android:name=".wxapi.WXEntryActivity"
+            android:name="com.wxhg.fl_umeng_share.wxapi.WXEntryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
@@ -39,7 +40,8 @@
         <activity
             android:name="com.tencent.connect.common.AssistActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:configChanges="orientation|keyboardHidden|screenSize"/>
+            android:configChanges="orientation|keyboardHidden"/>
+<!--            android:configChanges="orientation|keyboardHidden|screenSize"/>-->
     </application>
 
 </manifest>

@@ -57,13 +57,33 @@ class _MyAppState extends State<MyApp> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GestureDetector(
-                child: Text('分享文本'),
-                onTap: () => shareText(),
+                child: Text('分享文本到微信'),
+                onTap: () => shareText(platformStr: "WEIXIN"),
               ),
               Padding(padding: EdgeInsets.only(top: 50)),
               GestureDetector(
-                child: Text('分享图片'),
-                onTap: () => shareImage(),
+                child: Text('分享图片到微信'),
+                onTap: () => shareImage(platformStr: "WEIXIN"),
+              ),
+              Padding(padding: EdgeInsets.only(top: 50)),
+              GestureDetector(
+                child: Text('分享文本到微信朋友圈'),
+                onTap: () => shareText(platformStr: "WEIXIN_CIRCLE"),
+              ),
+              Padding(padding: EdgeInsets.only(top: 50)),
+              GestureDetector(
+                child: Text('分享图片到微信朋友圈'),
+                onTap: () => shareImage(platformStr: "WEIXIN_CIRCLE"),
+              ),
+              Padding(padding: EdgeInsets.only(top: 50)),
+              GestureDetector(
+                child: Text('分享图片到QQ'),
+                onTap: () => shareImage(platformStr: "QQ"),
+              ),
+              Padding(padding: EdgeInsets.only(top: 50)),
+              GestureDetector(
+                child: Text('分享图片到QQ空间'),
+                onTap: () => shareImage(platformStr: "QZONE"),
               ),
             ],
           ),
@@ -79,12 +99,19 @@ class _MyAppState extends State<MyApp> {
     String umSocialSDKVersion;
     String umengKey = Platform.isIOS
         ? "5e6c42b7978eea0774044998"
-        : Platform.isAndroid ? "5e685659dbc2ec076bd60fd4" : "";
-    String qqAppKey =
-        Platform.isIOS ? "1110253687" : Platform.isAndroid ? "1110253707" : "";
+        : Platform.isAndroid
+            ? "5e685659dbc2ec076bd60fd4"
+            : "";
+    String qqAppKey = Platform.isIOS
+        ? "1110253687"
+        : Platform.isAndroid
+            ? "1110253707"
+            : "";
     String qqAppSecret = Platform.isIOS
         ? "6KKQMf8VJsVaEcT7"
-        : Platform.isAndroid ? "RxxjEIgVJQHqh75W" : "";
+        : Platform.isAndroid
+            ? "RxxjEIgVJQHqh75W"
+            : "";
     try {
       umSocialSDKVersion = await FlutterUmengPlugin.shareInit(
         umengAppkey: umengKey, //your Umeng appkey
@@ -111,11 +138,11 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Future<void> shareText() async {
+  Future<void> shareText({String platformStr}) async {
     String result;
     try {
       result = await FlutterUmengPlugin.shareText(
-          shareString: "分享测试数据", platform: "WEIXIN");
+          shareString: "分享测试数据", platform: platformStr ?? "");
     } on PlatformException {
       result = 'fail';
     }
@@ -126,11 +153,11 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Future<void> shareImage() async {
+  Future<void> shareImage({String platformStr}) async {
     String result;
     try {
       result = await FlutterUmengPlugin.shareImage(
-          platform: "WEIXIN",
+          platform: platformStr ?? "",
           shareImage:
               "https://img.alicdn.com/tfs/TB1tmkCctTfau8jSZFwXXX1mVXa-1280-1280.png");
     } on PlatformException {
