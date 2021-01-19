@@ -132,11 +132,6 @@ PlatformConfig.setQQFileProvider("com.wxhg.123.fileprovider");
                         });
                     }
                 });
-
-                new ShareAction(activity)
-                        .setPlatform(platFormMedia)
-                        .withMedia(sImage)
-                        .setCallback(new UmengshareActionListener(activity, result)).share();
             } else {
                 new ShareAction(activity)
                         .setDisplayList(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE, SHARE_MEDIA.QQ, SHARE_MEDIA.QZONE)
