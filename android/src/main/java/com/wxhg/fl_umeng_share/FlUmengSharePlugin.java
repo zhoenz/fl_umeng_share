@@ -3,9 +3,14 @@ package com.wxhg.fl_umeng_share;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.socialize.PlatformConfig;
@@ -105,11 +110,29 @@ PlatformConfig.setQQFileProvider("com.wxhg.123.fileprovider");
                         .setCallback(new UmengshareActionListener(activity, result)).open();
             }
         } else if (call.method.equals("shareImage")) {
-            String shareImage = call.argument("shareImage");
+            final String shareImage = call.argument("shareImage");
             UMImage sImage = new UMImage(activity, shareImage);  //分享图
             String platform = call.argument("platform");
-            SHARE_MEDIA platFormMedia = getPlatFormMedia(platform);
+            final SHARE_MEDIA platFormMedia = getPlatFormMedia(platform);
             if (platFormMedia != null) {
+                final Result r=result;
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Glide.with(activity).asBitmap().load(shareImage).into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap bitmap, @Nullable Transition<? super Bitmap> transition) {
+                                UMImage umImage = new UMImage(activity, bitmap);
+                                new ShareAction(activity)
+                                        .setPlatform(platFormMedia)//传入平台
+                                        .withMedia(umImage)
+                                        .setCallback(new UmengshareActionListener(activity, r))//回调监听器
+                                        .share();
+                            }
+                        });
+                    }
+                });
+
                 new ShareAction(activity)
                         .setPlatform(platFormMedia)
                         .withMedia(sImage)

@@ -1,3 +1,10 @@
+## 0.0.6
+
+* 支持Android11
+## 0.0.5
+
+* 支持Android11
+
 ## 0.0.4
 
 * 修复android平台gradle:verifyReleaseResources 错误
