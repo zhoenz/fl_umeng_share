@@ -85,7 +85,8 @@ public class FlUmengSharePlugin implements FlutterPlugin, MethodCallHandler, Act
             PlatformConfig.setWeixin(wxAppKey, wxAppSecret);
 //        PlatformConfig.setSinaWeibo(appKey, appSecret, redirectURL);
             PlatformConfig.setQQZone(qqAppKey, qqAppSecret);
-
+PlatformConfig.setWXFileProvider("com.wxhg.123.fileprovider");
+PlatformConfig.setQQFileProvider("com.wxhg.123.fileprovider");
             // 选用AUTO页面采集模式
 //      MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.AUTO);
 
