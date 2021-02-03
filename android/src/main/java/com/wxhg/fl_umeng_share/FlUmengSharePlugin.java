@@ -116,22 +116,30 @@ PlatformConfig.setQQFileProvider("com.wxhg.123.fileprovider");
             final SHARE_MEDIA platFormMedia = getPlatFormMedia(platform);
             if (platFormMedia != null) {
                 final Result r=result;
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Glide.with(activity).asBitmap().load(shareImage).into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(@NonNull Bitmap bitmap, @Nullable Transition<? super Bitmap> transition) {
-                                UMImage umImage = new UMImage(activity, bitmap);
-                                new ShareAction(activity)
-                                        .setPlatform(platFormMedia)//传入平台
-                                        .withMedia(umImage)
-                                        .setCallback(new UmengshareActionListener(activity, r))//回调监听器
-                                        .share();
-                            }
-                        });
-                    }
-                });
+                UMImage umImage = new UMImage(activity,shareImage);
+                new ShareAction(activity)
+                        .setPlatform(platFormMedia)//传入平台
+                        .withMedia(umImage)
+                        .setCallback(new UmengshareActionListener(activity, r))//回调监听器
+                        .share();
+
+                // final Result r=result;
+                // activity.runOnUiThread(new Runnable() {
+                //     @Override
+                //     public void run() {
+                //         Glide.with(activity).asBitmap().load(shareImage).into(new SimpleTarget<Bitmap>() {
+                //             @Override
+                //             public void onResourceReady(@NonNull Bitmap bitmap, @Nullable Transition<? super Bitmap> transition) {
+                //                 UMImage umImage = new UMImage(activity, bitmap);
+                //                 new ShareAction(activity)
+                //                         .setPlatform(platFormMedia)//传入平台
+                //                         .withMedia(umImage)
+                //                         .setCallback(new UmengshareActionListener(activity, r))//回调监听器
+                //                         .share();
+                //             }
+                //         });
+                //     }
+                // });
             } else {
                 new ShareAction(activity)
                         .setDisplayList(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE, SHARE_MEDIA.QQ, SHARE_MEDIA.QZONE)

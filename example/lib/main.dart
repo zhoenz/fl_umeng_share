@@ -159,7 +159,7 @@ class _MyAppState extends State<MyApp> {
       result = await FlutterUmengPlugin.shareImage(
           platform: platformStr ?? "",
           shareImage:
-              "https://img.alicdn.com/tfs/TB1tmkCctTfau8jSZFwXXX1mVXa-1280-1280.png");
+              "https://share-benifit.oss-cn-zhangjiakou.aliyuncs.com/admin/upload/file/shareImg/1/3/20210202/07af34e1062c4045920bd3ab5558da63_preview.jpg");
     } on PlatformException {
       result = 'fail';
     }
